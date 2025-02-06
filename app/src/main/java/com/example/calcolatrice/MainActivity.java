@@ -8,7 +8,9 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import android.util.Log;
@@ -56,6 +58,49 @@ public class MainActivity extends AppCompatActivity
     public void onClick(View v)
     {
         Button aux = (Button) v;
-        text.setText(text.getText().toString() + aux.getText().toString());
+
+        if((aux.getText().toString().equals("=")))
+        {
+            text.setText(text.getText().toString() + aux.getText().toString());
+        }
+
+    }
+
+    private int calculateExpression()
+    {
+        String ex = text.getText().toString();
+
+        String aux = "";
+        List<Integer> numbers = new ArrayList<Integer>();
+        List<Character> operators = new ArrayList<Character>();
+
+        for(int i = 0; i < ex.toCharArray().length; i++)
+        {
+            char ch = ex.toCharArray()[i];
+            if(ch != '+' && ch != '-' && ch != '*' && ch != '/')
+            {
+                aux = aux + Character.toString(ch);
+                continue;
+            }
+            else if(ch == '-' && i == 0)
+            {
+                aux = "0";
+            }
+            numbers.add(Integer.parseInt(aux));
+            operators.add(ch);
+            aux = "";
+        }
+
+        for(int i = 0; i < operators.size();i++)
+        {
+            switch (operators.get(i))
+            {
+                case '+':
+                    break;
+
+            }
+        }
+
+        return 0;
     }
 }
