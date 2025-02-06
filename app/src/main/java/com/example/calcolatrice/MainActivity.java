@@ -96,8 +96,21 @@ public class MainActivity extends AppCompatActivity
             switch (operators.get(i))
             {
                 case '+':
+                    numbers.add(0, numbers.get(0) + numbers.get(1));
+                    numbers.remove(1);
                     break;
-
+                case '-':
+                    numbers.add(0, numbers.get(0) - numbers.get(1));
+                    numbers.remove(1);
+                    break;
+                case '*':
+                    numbers.add(0, numbers.get(0) * numbers.get(1));
+                    numbers.remove(1);
+                    break;
+                case '/':
+                    numbers.add(0, numbers.get(0) / numbers.get(1));
+                    numbers.remove(1);
+                    break;
             }
         }
 
