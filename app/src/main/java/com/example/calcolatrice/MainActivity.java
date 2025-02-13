@@ -17,6 +17,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity
 {
@@ -39,6 +40,8 @@ public class MainActivity extends AppCompatActivity
         buttons.put("-", (Button) findViewById(R.id.bM));
         buttons.put("*", (Button) findViewById(R.id.bX));
         buttons.put("/", (Button) findViewById(R.id.bD));
+
+        text = findViewById(R.id.textView);
     }
 
     @Override
@@ -58,62 +61,103 @@ public class MainActivity extends AppCompatActivity
     public void onClick(View v)
     {
         Button aux = (Button) v;
-
-        if((aux.getText().toString().equals("=")))
+        if(!(aux.getText().toString().equals("=")))
         {
-            text.setText(text.getText().toString() + aux.getText().toString());
-        }
+            if(text.getText().toString().isEmpty() && (aux.getText().toString().equals("*") || aux.getText().toString().equals("/")))
+                return;
 
+            StringBuilder auxS = new StringBuilder(text.getText().toString());
+            auxS.append(aux.getText().toString());
+            text.setText(auxS);
+        }
+        else
+        {
+            text.setText(String.valueOf(calculateExpression()));
+        }
     }
 
     private int calculateExpression()
     {
         String ex = text.getText().toString();
-
-        String aux = "";
+        StringBuilder aux = new StringBuilder();
         List<Integer> numbers = new ArrayList<Integer>();
         List<Character> operators = new ArrayList<Character>();
 
-        for(int i = 0; i < ex.toCharArray().length; i++)
+        findExpression(ex, aux, numbers, operators);
+
+        resolvePriority(numbers, operators);
+
+        for(int i = 0; i + 1 <= operators.size(); i++)
         {
+            numbers.set(i+1, calculateExpression(operators.get(i),numbers.get(i),numbers.get(i+1)));
+        }
+
+        return numbers.get(numbers.size() - 1);
+    }
+
+    private void findExpression(String ex, StringBuilder aux, List<Integer> numbers, List<Character> operators)
+    {
+        for(int i = 0; i <= ex.length(); i++)
+        {
+            if(i ==  ex.length())
+            {
+                numbers.add(Integer.parseInt(aux.toString()));
+                continue;
+            }
+
             char ch = ex.toCharArray()[i];
             if(ch != '+' && ch != '-' && ch != '*' && ch != '/')
             {
-                aux = aux + Character.toString(ch);
+                aux.append(Character.toString(ch));
                 continue;
             }
-            else if(ch == '-' && i == 0)
+            else if((ch == '-' || ch == '+') && i == 0)
             {
-                aux = "0";
+                aux = new StringBuilder("0");
             }
-            numbers.add(Integer.parseInt(aux));
+            numbers.add(Integer.parseInt(aux.toString()));
             operators.add(ch);
-            aux = "";
+            aux = new StringBuilder();
         }
+    }
 
-        for(int i = 0; i < operators.size();i++)
+    private int calculateExpression(char operator, int num1, int num2)
+    {
+        switch (operator)
         {
-            switch (operators.get(i))
-            {
-                case '+':
-                    numbers.add(0, numbers.get(0) + numbers.get(1));
-                    numbers.remove(1);
-                    break;
-                case '-':
-                    numbers.add(0, numbers.get(0) - numbers.get(1));
-                    numbers.remove(1);
-                    break;
-                case '*':
-                    numbers.add(0, numbers.get(0) * numbers.get(1));
-                    numbers.remove(1);
-                    break;
-                case '/':
-                    numbers.add(0, numbers.get(0) / numbers.get(1));
-                    numbers.remove(1);
-                    break;
-            }
+            case '+':
+                return num1 + num2;
+            case '-':
+                return num1 - num2;
+            case '*':
+                return num1 * num2;
+            case '/':
+                return num1 / num2;
         }
-
         return 0;
     }
+
+    private void resolvePriority(List<Integer> numbers, List<Character> operators)
+    {
+        for(int i = 0; i < operators.size(); i++)
+        {
+            if(operators.get(i) == '*' || operators.get(i) == '/')
+            {
+                switch (operators.get(i))
+                {
+                    case '*':
+                        numbers.set(i, numbers.get(i) * numbers.get(i + 1));
+                        numbers.remove(i + 1);
+                        operators.remove(i);
+                        break;
+                    case '/':
+                        numbers.set(i, numbers.get(i) / numbers.get(i + 1));
+                        numbers.remove(i + 1);
+                        operators.remove(i);
+                        break;
+                }
+            }
+        }
+    }
 }
+
