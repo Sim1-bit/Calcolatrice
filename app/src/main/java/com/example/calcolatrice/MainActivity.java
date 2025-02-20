@@ -61,8 +61,43 @@ public class MainActivity extends AppCompatActivity
     public void onClick(View v)
     {
         Button aux = (Button) v;
+        switch (aux.getText().toString())
+        {
+            case "C":
+                String expression = text.getText().toString(); // Get text properly
+                if (!expression.isEmpty())
+                { // Check if not empty
+                    text.setText(expression.substring(0, expression.length() - 1)); // Remove last char
+                }
+                return;
+            case "CE":
+                text.setText("");
+                return;
+        }
+
         if(!(aux.getText().toString().equals("=")))
         {
+            if(!text.getText().toString().isEmpty())
+            {
+                switch (text.getText().charAt(text.getText().length() - 1))
+                {
+                    case '+':
+                    case '-':
+                    case '*':
+                    case '/':
+                        if(aux.getText().charAt(0) == '+' || aux.getText().charAt(0) == '-' || aux.getText().charAt(0) == '*' || aux.getText().charAt(0) == '/')
+                            return;
+                        break;
+
+                }
+            }
+
+            /*char c = text.getText().charAt(text.getText().length() - 1);
+            String b = aux.getText().toString();
+            if((c == '+' || c == '-' || c == '*' || c == '/') && (b.equals("+") || b.equals("-") || b.equals("*") || b.equals("/")))
+            {
+                return;
+            }*/
             if(text.getText().toString().isEmpty() && (aux.getText().toString().equals("*") || aux.getText().toString().equals("/")))
                 return;
 
@@ -89,7 +124,7 @@ public class MainActivity extends AppCompatActivity
 
         for(int i = 0; i + 1 <= operators.size(); i++)
         {
-            numbers.set(i+1, calculateExpression(operators.get(i),numbers.get(i),numbers.get(i+1)));
+            numbers.set(i + 1, calculateExpression(operators.get(i),numbers.get(i),numbers.get(i+1)));
         }
 
         return numbers.get(numbers.size() - 1);
@@ -143,19 +178,10 @@ public class MainActivity extends AppCompatActivity
         {
             if(operators.get(i) == '*' || operators.get(i) == '/')
             {
-                switch (operators.get(i))
-                {
-                    case '*':
-                        numbers.set(i, numbers.get(i) * numbers.get(i + 1));
-                        numbers.remove(i + 1);
-                        operators.remove(i);
-                        break;
-                    case '/':
-                        numbers.set(i, numbers.get(i) / numbers.get(i + 1));
-                        numbers.remove(i + 1);
-                        operators.remove(i);
-                        break;
-                }
+                numbers.set(i + 1, calculateExpression(operators.get(i), numbers.get(i), numbers.get(i + 1)));
+                operators.remove(i);
+                numbers.remove(i);
+                i--;
             }
         }
     }

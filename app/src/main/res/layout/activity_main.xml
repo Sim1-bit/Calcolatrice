@@ -183,6 +183,28 @@
         app:layout_constraintBottom_toTopOf="@+id/bP"
         app:layout_constraintEnd_toEndOf="parent" />
 
+    <Button
+        android:id="@+id/bC"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="15dp"
+        android:onClick="onClick"
+        android:text="C"
+        app:layout_constraintEnd_toStartOf="@+id/b0"
+        app:layout_constraintTop_toBottomOf="@+id/b7" />
+
+    <Button
+        android:id="@+id/bCE"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="26dp"
+        android:onClick="onClick"
+        android:text="CE"
+        app:layout_constraintEnd_toStartOf="@+id/bD"
+        app:layout_constraintTop_toBottomOf="@+id/b9" />
+
     <TextView
         android:id="@+id/textView"
         android:layout_width="210dp"
